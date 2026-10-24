@@ -38,11 +38,26 @@ jobs:
           if [ -n "$RELEASE_KEYSTORE_BASE64" ]; then
             printf '%s' "$RELEASE_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
             echo "Keystore release.jks decoded successfully."
-            echo "$RELEASE_KEYSTORE_BASE64"
             if [ -f "RUNNER_TEMP/release.jks" ]; then
               echo "release.jks file exists."
+            else
+              echo "halaha"
+            fi
+            if [ -f "RUNNER_TEMP" ]; then
+              echo "release.jks file exists."
+            else
+              echo "halaha"
             fi
             export RELEASE_STORE_FILE="$RUNNER_TEMP/release.jks"
           else
             echo "No KEYSTORE_BASE64 secret provided."
           fi
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: test-results
+          path: "RUNNER_TEMP/*"
+          if-no-files-found: error
+          retention-days: 7

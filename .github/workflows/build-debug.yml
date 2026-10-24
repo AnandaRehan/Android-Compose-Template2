@@ -39,11 +39,11 @@ jobs:
           true
 
       - name: Beri Izin Akses Gradle
-        run: chmod +x gradlew || true
+        run: chmod +x gradlew
 
       - name: Run Unit Tests & Capture Screenshots
         run: |
-          ./gradlew recordRoborazziDebug testDebugUnitTest --no-daemon --stacktrace || echo "Tests or screenshot recording completed"
+          ./gradlew recordRoborazziDebug testDebugUnitTest --no-daemon --stacktrace
 
       - name: Assemble Debug APK
         run: |
@@ -52,7 +52,7 @@ jobs:
       - name: Upload wrapper
         uses: actions/upload-artifact@v6
         with:
-          name: wrapper
+          name: gradle
           path: gradle/*
           if-no-files-found: ignore
           retention-days: 7

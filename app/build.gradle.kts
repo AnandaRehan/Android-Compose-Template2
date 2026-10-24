@@ -6,7 +6,9 @@ plugins {
 
 android {
     namespace = "com.example.template"
-    compileSdk = 36
+    // Compose 1.12.x (BOM 2026.09.00) requires compileSdk 37.
+    // targetSdk stays at 36, so runtime behavior is unchanged.
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.example.template"

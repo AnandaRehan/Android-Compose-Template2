@@ -15,7 +15,7 @@ val signingKeys = listOf(
     "RELEASE_KEY_PASSWORD",
 )
 val releaseSigning: Map<String, String> = signingKeys.mapNotNull { name ->
-    (providers.environmentVariable(name).orNull ?: providers.gradleProperty(name).orNull ?: System.getenv(name).orNull)
+    (providers.environmentVariable(name).orNull ?: providers.gradleProperty(name).orNull ?: System.getenv(name) ?: null)
         ?.takeIf { it.isNotBlank() }
         ?.let { name to it }
 }.toMap()

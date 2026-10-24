@@ -49,14 +49,6 @@ jobs:
         run: |
           ./gradlew assembleDebug --no-daemon --no-configuration-cache --stacktrace
 
-      - name: Upload wrapper
-        uses: actions/upload-artifact@v6
-        with:
-          name: gradle
-          path: gradle/*
-          if-no-files-found: ignore
-          retention-days: 7
-
       - name: Upload Debug APK
         uses: actions/upload-artifact@v6
         with:

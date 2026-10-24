@@ -4,6 +4,31 @@ plugins {
     alias(libs.plugins.roborazzi)
 }
 
+// Release signing is read from environment variables (CI) or ~/.gradle/gradle.properties:
+//   RELEASE_STORE_FILE, RELEASE_STORE_PASSWORD, RELEASE_KEY_ALIAS, RELEASE_KEY_PASSWORD
+// Set all four or none. With none, the release APK is signed with the debug key, so it is
+// always signed and installable, but Google Play will not accept it.
+val signingKeys = listOf(
+    "RELEASE_STORE_FILE",
+    "RELEASE_STORE_PASSWORD",
+    "RELEASE_KEY_ALIAS",
+    "RELEASE_KEY_PASSWORD",
+)
+val releaseSigning: Map<String, String> = signingKeys.mapNotNull { name ->
+    (providers.environmentVariable(name).orNull ?: providers.gradleProperty(name).orNull ?: System.getenv(name).orNull)
+        ?.takeIf { it.isNotBlank() }
+        ?.let { name to it }
+}.toMap()
+
+check(releaseSigning.isEmpty() || releaseSigning.size == signingKeys.size) {
+    "Incomplete release signing config. Missing: ${signingKeys - releaseSigning.keys}"
+}
+if (releaseSigning.isEmpty() &&
+    gradle.startParameter.taskNames.any { it.contains("release", ignoreCase = true) }
+) {
+    logger.warn("No RELEASE_* signing config found: signing release with the debug key (not Play-publishable).")
+}
+
 android {
     namespace = "com.example.template"
     // Compose 1.12.x (BOM 2026.09.00) requires compileSdk 37.
@@ -18,8 +43,27 @@ android {
         versionName = "1.0"
     }
 
+    signingConfigs {
+        getByName("debug") {
+          val localDebugKs = file("${rootDir}/debug.keystore")
+          if (localDebugKs.exists()) {
+            storeFile = localDebugKs
+          }
+        }
+        if (releaseSigning.isNotEmpty()) {
+            create("release") {
+                storeFile = file(releaseSigning.getValue("RELEASE_STORE_FILE"))
+                storePassword = releaseSigning.getValue("RELEASE_STORE_PASSWORD")
+                keyAlias = releaseSigning.getValue("RELEASE_KEY_ALIAS")
+                keyPassword = releaseSigning.getValue("RELEASE_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
+            // Real key when configured, otherwise the debug key: never an unsigned APK.
+            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -27,10 +71,14 @@ android {
                 "proguard-rules.pro",
             )
         }
+        debug {
+          signingConfig = signingConfigs.getByName("debug")
+        }
     }
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     testOptions {

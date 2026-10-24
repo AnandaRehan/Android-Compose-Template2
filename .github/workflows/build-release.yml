@@ -57,7 +57,7 @@ jobs:
           else
             echo "No KEYSTORE_BASE64 secret provided."
           fi
-          if [ -f RELEASE_STORE_FILE ]; then
+          if [ -f "RUNNER_TEMP/release.jks" ]; then
             echo "release.jks file exists."
             if [ -n "$RELEASE_STORE_PASSWORD" ]; then
               echo "STORE_PASSWORD secret is configured."

@@ -108,6 +108,14 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
 
+    // implementation(libs.androidx.compose.material.icons.core)
+    // implementation(libs.androidx.compose.material.icons.extended)
+
+    // implementation(libs.androidx.media3.ui)
+    // implementation(libs.androidx.media3.ui.compose)
+    // implementation(libs.androidx.media3.ui.compose.material3)
+    // implementation(libs.androidx.media3.exoplayer)
+
     debugImplementation(libs.androidx.compose.ui.tooling)
     // Registers ComponentActivity in the manifest so Compose tests can launch it.
     debugImplementation(libs.androidx.compose.ui.test.manifest)

@@ -94,7 +94,7 @@ jobs:
       - name: Upload Release APK
         uses: actions/upload-artifact@v6
         with:
-          name: Template-release-apk
+          name: app-release-apk
           path: app/build/outputs/apk/release/*.apk
           retention-days: 7
 
@@ -111,7 +111,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v6
         with:
-          name: template-ui-screenshots
+          name: app-ui-screenshots
           path: |
             app/src/test/screenshots/*.png
             app/build/outputs/roborazzi/*.png
@@ -122,7 +122,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v6
         with:
-          name: template-ui-screenshots-roborazzi
+          name: app-ui-screenshots-roborazzi
           path: |
             app/build/outputs/roborazzi/*.png
           if-no-files-found: ignore
